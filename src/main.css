@@ -5,4 +5,10 @@ html,
 body {
   font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
+  background: var(--color-neutral-950);
+  color: var(--color-white);
+}
+
+* {
+  box-sizing: border-box;
 }

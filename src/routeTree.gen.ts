@@ -11,17 +11,11 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as DefaultImport } from './routes/_default'
 import { Route as ShareIndexImport } from './routes/share/index'
 import { Route as DefaultIndexImport } from './routes/_default/index'
 import { Route as StationsStationIDImport } from './routes/stations/$stationID'
 
 // Create/Update Routes
-
-const DefaultRoute = DefaultImport.update({
-  id: '/_default',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const ShareIndexRoute = ShareIndexImport.update({
   id: '/share/',
@@ -30,9 +24,9 @@ const ShareIndexRoute = ShareIndexImport.update({
 } as any)
 
 const DefaultIndexRoute = DefaultIndexImport.update({
-  id: '/',
+  id: '/_default/',
   path: '/',
-  getParentRoute: () => DefaultRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
 const StationsStationIDRoute = StationsStationIDImport.update({
@@ -45,13 +39,6 @@ const StationsStationIDRoute = StationsStationIDImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_default': {
-      id: '/_default'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof DefaultImport
-      parentRoute: typeof rootRoute
-    }
     '/stations/$stationID': {
       id: '/stations/$stationID'
       path: '/stations/$stationID'
@@ -64,7 +51,7 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof DefaultIndexImport
-      parentRoute: typeof DefaultImport
+      parentRoute: typeof rootRoute
     }
     '/share/': {
       id: '/share/'
@@ -78,19 +65,7 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-interface DefaultRouteChildren {
-  DefaultIndexRoute: typeof DefaultIndexRoute
-}
-
-const DefaultRouteChildren: DefaultRouteChildren = {
-  DefaultIndexRoute: DefaultIndexRoute,
-}
-
-const DefaultRouteWithChildren =
-  DefaultRoute._addFileChildren(DefaultRouteChildren)
-
 export interface FileRoutesByFullPath {
-  '': typeof DefaultRouteWithChildren
   '/stations/$stationID': typeof StationsStationIDRoute
   '/': typeof DefaultIndexRoute
   '/share': typeof ShareIndexRoute
@@ -104,7 +79,6 @@ export interface FileRoutesByTo {
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/_default': typeof DefaultRouteWithChildren
   '/stations/$stationID': typeof StationsStationIDRoute
   '/_default/': typeof DefaultIndexRoute
   '/share/': typeof ShareIndexRoute
@@ -112,27 +86,22 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/stations/$stationID' | '/' | '/share'
+  fullPaths: '/stations/$stationID' | '/' | '/share'
   fileRoutesByTo: FileRoutesByTo
   to: '/stations/$stationID' | '/' | '/share'
-  id:
-    | '__root__'
-    | '/_default'
-    | '/stations/$stationID'
-    | '/_default/'
-    | '/share/'
+  id: '__root__' | '/stations/$stationID' | '/_default/' | '/share/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  DefaultRoute: typeof DefaultRouteWithChildren
   StationsStationIDRoute: typeof StationsStationIDRoute
+  DefaultIndexRoute: typeof DefaultIndexRoute
   ShareIndexRoute: typeof ShareIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  DefaultRoute: DefaultRouteWithChildren,
   StationsStationIDRoute: StationsStationIDRoute,
+  DefaultIndexRoute: DefaultIndexRoute,
   ShareIndexRoute: ShareIndexRoute,
 }
 
@@ -146,23 +115,16 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_default",
         "/stations/$stationID",
+        "/_default/",
         "/share/"
-      ]
-    },
-    "/_default": {
-      "filePath": "_default.tsx",
-      "children": [
-        "/_default/"
       ]
     },
     "/stations/$stationID": {
       "filePath": "stations/$stationID.tsx"
     },
     "/_default/": {
-      "filePath": "_default/index.tsx",
-      "parent": "/_default"
+      "filePath": "_default/index.tsx"
     },
     "/share/": {
       "filePath": "share/index.tsx"
