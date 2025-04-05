@@ -1,7 +1,10 @@
 import { Player } from "@components/player";
 import { useFetchStationsQuery } from "@features/stations/queries/useFetchStationsQuery";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
+import { FaRegArrowAltCircleLeft } from "react-icons/fa";
+import { MdOutlineErrorOutline } from "react-icons/md";
+import { Spinner } from "@components/spinner";
 
 export const Route = createFileRoute("/stations/$stationID")({
   component: View,
@@ -9,26 +12,61 @@ export const Route = createFileRoute("/stations/$stationID")({
 
 function View() {
   const { stationID } = Route.useParams();
-  const { data } = useFetchStationsQuery();
+  const { data, status } = useFetchStationsQuery();
 
   const station = useMemo(() => {
     return data?.data.find((item) => item.id === stationID);
   }, [data, stationID]);
 
-  // TODO: Error State, Loader
+  // Note: Skeleton would be a better UX, but spinner is faster solution that's fine for this application.
+  if (status === "pending") {
+    return (
+      <div className="h-screen w-full flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
+
   if (!station) {
-    return null;
+    return (
+      <div className="h-screen w-full flex items-center justify-center">
+        <div>
+          <Link
+            to="/"
+            className="flex items-center gap-1 text-white hover:text-white/80 mb-3"
+          >
+            <FaRegArrowAltCircleLeft className="text-sm" />
+            <span className="text-xs">Go Back</span>
+          </Link>
+
+          <div className="h-auto w-80 rounded-xl bg-white/5 p-6 text-white flex flex-col gap-3 items-center">
+            <MdOutlineErrorOutline className="text-[48px]" />
+            <span className="text-sm">Could not find selected station.</span>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="h-screen w-full flex items-center justify-center">
-      <Player
-        stationID={station.id}
-        stationThumbnail={station.imgUrl}
-        stationName={station.name}
-        stationStreamURL={station.streamUrl}
-        stationDescription={station.description}
-      />
+      <div>
+        <Link
+          to="/"
+          className="flex items-center gap-1 text-white hover:text-white/80 mb-3"
+        >
+          <FaRegArrowAltCircleLeft className="text-sm" />
+          <span className="text-xs">Go Back</span>
+        </Link>
+
+        <Player
+          stationID={station.id}
+          stationThumbnail={station.imgUrl}
+          stationName={station.name}
+          stationStreamURL={station.streamUrl}
+          stationDescription={station.description}
+        />
+      </div>
     </div>
   );
 }

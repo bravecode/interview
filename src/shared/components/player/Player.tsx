@@ -68,7 +68,7 @@ export const Player: React.FC<PlayerProps> = ({
       }));
     };
 
-    const handleTimeUpdate = (e: unknown): void => {
+    const handleTimeUpdate = (): void => {
       const audio = audioRef.current;
 
       const buffered =
@@ -92,10 +92,16 @@ export const Player: React.FC<PlayerProps> = ({
 
     return () => {
       audioRefCopy.pause();
+
+      // Clear Events
       audioRefCopy.removeEventListener("playing", handlePlay);
       audioRefCopy.removeEventListener("pause", handlePause);
       audioRefCopy.removeEventListener("error", handleError);
       audioRefCopy.removeEventListener("timeupdate", handleTimeUpdate);
+
+      // Clear Player
+      audioRefCopy.src = "";
+      audioRefCopy.removeAttribute("src");
     };
   }, [stationStreamURL]);
 
