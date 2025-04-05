@@ -21,7 +21,7 @@ export const Station: React.FC<StationProps> = ({ data }) => {
         />
       </div>
 
-      <header className="mt-6 text-sm">
+      <header className="mt-3 text-sm">
         <h3 className="font-semibold text-white">{data.name}</h3>
         <p className="font-normal text-neutral-400 mt-1">{data.description}</p>
       </header>
