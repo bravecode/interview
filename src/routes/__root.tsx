@@ -1,15 +1,9 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createRootRoute({
   component: () => (
-    <main>
-      <nav>
-        <Link to="/">Home</Link>
-      </nav>
-
-      <div>
-        <Outlet />
-      </div>
+    <main className="h-screen w-full bg-neutral-950">
+      <Outlet />
     </main>
   ),
 });
