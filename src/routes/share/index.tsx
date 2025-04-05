@@ -1,14 +1,15 @@
+import { Player } from "@components/player";
 import { createFileRoute } from "@tanstack/react-router";
-import { Player } from "../shared/components/player";
 
-export const Route = createFileRoute("/")({
-  component: View,
+export const Route = createFileRoute("/share/")({
+  component: RouteComponent,
 });
 
-function View() {
+function RouteComponent() {
   return (
-    <div className="h-full w-full flex items-center justify-center">
+    <div className="h-screen w-full flex items-center justify-center">
       <Player
+        stationID="s131270"
         stationThumbnail="https://cdn-profiles-dev.tunein.com/s131270/images/logod.png"
         stationName="Radio Santa Claus"
         stationStreamURL="https://streaming.radiostreamlive.com/radiosantaclaus_devices"

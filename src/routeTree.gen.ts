@@ -11,13 +11,33 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as IndexImport } from './routes/index'
+import { Route as DefaultImport } from './routes/_default'
+import { Route as ShareIndexImport } from './routes/share/index'
+import { Route as DefaultIndexImport } from './routes/_default/index'
+import { Route as StationsStationIDImport } from './routes/stations/$stationID'
 
 // Create/Update Routes
 
-const IndexRoute = IndexImport.update({
+const DefaultRoute = DefaultImport.update({
+  id: '/_default',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ShareIndexRoute = ShareIndexImport.update({
+  id: '/share/',
+  path: '/share/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DefaultIndexRoute = DefaultIndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => DefaultRoute,
+} as any)
+
+const StationsStationIDRoute = StationsStationIDImport.update({
+  id: '/stations/$stationID',
+  path: '/stations/$stationID',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -25,11 +45,32 @@ const IndexRoute = IndexImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_default': {
+      id: '/_default'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof DefaultImport
+      parentRoute: typeof rootRoute
+    }
+    '/stations/$stationID': {
+      id: '/stations/$stationID'
+      path: '/stations/$stationID'
+      fullPath: '/stations/$stationID'
+      preLoaderRoute: typeof StationsStationIDImport
+      parentRoute: typeof rootRoute
+    }
+    '/_default/': {
+      id: '/_default/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexImport
+      preLoaderRoute: typeof DefaultIndexImport
+      parentRoute: typeof DefaultImport
+    }
+    '/share/': {
+      id: '/share/'
+      path: '/share'
+      fullPath: '/share'
+      preLoaderRoute: typeof ShareIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -37,34 +78,62 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface DefaultRouteChildren {
+  DefaultIndexRoute: typeof DefaultIndexRoute
+}
+
+const DefaultRouteChildren: DefaultRouteChildren = {
+  DefaultIndexRoute: DefaultIndexRoute,
+}
+
+const DefaultRouteWithChildren =
+  DefaultRoute._addFileChildren(DefaultRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '': typeof DefaultRouteWithChildren
+  '/stations/$stationID': typeof StationsStationIDRoute
+  '/': typeof DefaultIndexRoute
+  '/share': typeof ShareIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/stations/$stationID': typeof StationsStationIDRoute
+  '/': typeof DefaultIndexRoute
+  '/share': typeof ShareIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
+  '/_default': typeof DefaultRouteWithChildren
+  '/stations/$stationID': typeof StationsStationIDRoute
+  '/_default/': typeof DefaultIndexRoute
+  '/share/': typeof ShareIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '' | '/stations/$stationID' | '/' | '/share'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/stations/$stationID' | '/' | '/share'
+  id:
+    | '__root__'
+    | '/_default'
+    | '/stations/$stationID'
+    | '/_default/'
+    | '/share/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  DefaultRoute: typeof DefaultRouteWithChildren
+  StationsStationIDRoute: typeof StationsStationIDRoute
+  ShareIndexRoute: typeof ShareIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  DefaultRoute: DefaultRouteWithChildren,
+  StationsStationIDRoute: StationsStationIDRoute,
+  ShareIndexRoute: ShareIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +146,26 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/_default",
+        "/stations/$stationID",
+        "/share/"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
+    "/_default": {
+      "filePath": "_default.tsx",
+      "children": [
+        "/_default/"
+      ]
+    },
+    "/stations/$stationID": {
+      "filePath": "stations/$stationID.tsx"
+    },
+    "/_default/": {
+      "filePath": "_default/index.tsx",
+      "parent": "/_default"
+    },
+    "/share/": {
+      "filePath": "share/index.tsx"
     }
   }
 }

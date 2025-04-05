@@ -7,6 +7,7 @@ import { useAtomValue } from "jotai";
 import { isMutedAtom, volumeAtom } from "./atoms";
 
 type PlayerProps = {
+  stationID: string;
   stationThumbnail: string;
   stationName: string;
   stationDescription: string;
@@ -14,6 +15,7 @@ type PlayerProps = {
 };
 
 export const Player: React.FC<PlayerProps> = ({
+  stationID,
   stationThumbnail,
   stationName,
   stationDescription,
@@ -181,6 +183,7 @@ export const Player: React.FC<PlayerProps> = ({
       />
 
       <PlayerNavigation
+        stationID={stationID}
         status={playerState.status}
         onSeekBackward={handleSeekBackward}
         onSeekForward={handleSeekForward}

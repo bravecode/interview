@@ -6,13 +6,14 @@ import {
   FaForward,
   FaBackward,
   FaVolumeXmark,
-  FaRegHeart,
   FaVolumeLow,
 } from "react-icons/fa6";
 import { useAtom } from "jotai";
 import { isMutedAtom } from "./atoms";
+import { StationFavorite } from "@features/stations/components/StationFavorite";
 
 type PlayerNavigationProps = {
+  stationID: string;
   status: PlayerStatus;
   onSeekForward: () => void;
   onSeekBackward: () => void;
@@ -20,6 +21,7 @@ type PlayerNavigationProps = {
 };
 
 export const PlayerNavigation: React.FC<PlayerNavigationProps> = ({
+  stationID,
   status,
   onSeekForward,
   onSeekBackward,
@@ -57,12 +59,7 @@ export const PlayerNavigation: React.FC<PlayerNavigationProps> = ({
       >
         <FaForward />
       </button>
-      <button
-        onClick={() => {}}
-        className="cursor-pointer text-white text-[16px] hover:text-white/80"
-      >
-        <FaRegHeart />
-      </button>
+      <StationFavorite stationID={stationID} />
     </nav>
   );
 };
