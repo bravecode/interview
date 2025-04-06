@@ -35,13 +35,7 @@ function View() {
 
   return (
     <div className="h-screen w-full flex items-center justify-center">
-      <Player
-        stationID={station.id}
-        stationThumbnail={station.imgUrl}
-        stationName={station.name}
-        stationStreamURL={station.streamUrl}
-        stationDescription={station.description}
-      />
+      <Player data={station} />
     </div>
   );
 }

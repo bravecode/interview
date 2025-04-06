@@ -55,13 +55,7 @@ function View() {
           <span className="text-xs">Go Back</span>
         </Link>
 
-        <Player
-          stationID={station.id}
-          stationThumbnail={station.imgUrl}
-          stationName={station.name}
-          stationStreamURL={station.streamUrl}
-          stationDescription={station.description}
-        />
+        <Player data={station} />
       </div>
     </div>
   );

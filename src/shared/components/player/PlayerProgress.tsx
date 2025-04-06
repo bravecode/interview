@@ -1,24 +1,25 @@
 import React from "react";
 import * as Slider from "@radix-ui/react-slider";
 import { formatPlayerTime } from "@utils/formatPlayerTime";
+import { useSeek } from "./useSeek";
 
 type PlayerProgressProps = {
+  audio: HTMLAudioElement;
   currentTime: number;
   duration: number;
   disabled?: boolean;
-  seekable?: boolean;
-  onSeek: (value: number) => void;
 };
 
 export const PlayerProgress: React.FC<PlayerProgressProps> = ({
+  audio,
   currentTime,
   duration,
   disabled,
-  seekable,
-  onSeek,
 }) => {
+  const { canSeek, seekTo } = useSeek({ audio });
+
   const handleValueChange = (values: number[]) => {
-    onSeek(values[0]);
+    seekTo(values[0]);
   };
 
   return (
@@ -28,7 +29,7 @@ export const PlayerProgress: React.FC<PlayerProgressProps> = ({
         min={0}
         max={duration}
         onValueChange={handleValueChange}
-        disabled={disabled || !seekable}
+        disabled={disabled || !canSeek}
         className="block h-1.5 w-full relative"
       >
         <Slider.Track className="inline-block h-1.5 w-full bg-neutral-400 rounded-full absolute overflow-hidden">
@@ -39,7 +40,7 @@ export const PlayerProgress: React.FC<PlayerProgressProps> = ({
 
       <div className="text-neutral-400 flex items-center justify-between font-semibold text-xs">
         <span>{formatPlayerTime(currentTime)}</span>
-        {seekable ? <span>{formatPlayerTime(duration)}</span> : null}
+        {canSeek ? <span>{formatPlayerTime(duration)}</span> : null}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { PlayerStatus } from "./types";
 import {
   FaPlay,
@@ -11,28 +11,43 @@ import {
 import { useAtom } from "jotai";
 import { isMutedAtom } from "./atoms";
 import { StationFavorite } from "@features/stations/components/StationFavorite";
+import { useSeek } from "./useSeek";
 
 type PlayerNavigationProps = {
+  audio: HTMLAudioElement;
   stationID: string;
   status: PlayerStatus;
-  seekable?: boolean;
-  onSeekForward: () => void;
-  onSeekBackward: () => void;
-  onToggle: () => void;
 };
 
 export const PlayerNavigation: React.FC<PlayerNavigationProps> = ({
+  audio,
   stationID,
   status,
-  seekable,
-  onSeekForward,
-  onSeekBackward,
-  onToggle,
 }) => {
   const [isMuted, setIsMuted] = useAtom(isMutedAtom);
 
   const handleMuteToggle = () => {
     setIsMuted((prev) => !prev);
+  };
+
+  useEffect(() => {
+    audio.muted = isMuted;
+  }, [isMuted, audio]);
+
+  const { canSeek, seekBackward, seekForward } = useSeek({ audio });
+
+  const handleToggle = () => {
+    if (status === "error" || status === "loading") {
+      return;
+    }
+
+    if (status === "playing") {
+      audio.pause();
+
+      return;
+    }
+
+    audio.play();
   };
 
   return (
@@ -44,22 +59,23 @@ export const PlayerNavigation: React.FC<PlayerNavigationProps> = ({
         {isMuted ? <FaVolumeXmark /> : <FaVolumeLow />}
       </button>
       <button
-        onClick={onSeekBackward}
+        onClick={seekBackward}
         className="cursor-pointer text-white text-[24px] hover:text-white/80 disabled:text-neutral-600"
-        disabled={!seekable}
+        disabled={!canSeek}
       >
         <FaBackward />
       </button>
       <button
-        onClick={onToggle}
-        className="cursor-pointer text-white text-[36px] hover:text-white/80"
+        onClick={handleToggle}
+        className="cursor-pointer text-white text-[36px] hover:text-white/80 disabled:text-neutral-600"
+        disabled={status === "loading" || status === "error"}
       >
         {status === "playing" ? <FaPause /> : <FaPlay />}
       </button>
       <button
-        onClick={onSeekForward}
+        onClick={seekForward}
         className="cursor-pointer text-white text-[24px] hover:text-white/80 disabled:text-neutral-600"
-        disabled={!seekable}
+        disabled={!canSeek}
       >
         <FaForward />
       </button>

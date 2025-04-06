@@ -1,15 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import * as Slider from "@radix-ui/react-slider";
 import { FaVolumeLow } from "react-icons/fa6";
 import { useAtom } from "jotai";
 import { volumeAtom } from "./atoms";
 
-export const PlayerVolume: React.FC = () => {
+type PlayerVolumeProps = {
+  audio: HTMLAudioElement;
+};
+
+export const PlayerVolume: React.FC<PlayerVolumeProps> = ({ audio }) => {
   const [volume, setVolume] = useAtom(volumeAtom);
 
   const handleVolumeChange = (values: number[]) => {
     setVolume(values[0]);
   };
+
+  useEffect(() => {
+    audio.volume = Math.min(Math.max(volume / 100, 0), 1);
+  }, [volume, audio]);
 
   return (
     <div className="flex gap-2 items-center">
