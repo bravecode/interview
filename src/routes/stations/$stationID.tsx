@@ -1,9 +1,8 @@
-import { Player } from "@components/player";
+import { Player, PlayerError } from "@components/player";
 import { useFetchStationsQuery } from "@features/stations/queries/useFetchStationsQuery";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
-import { MdOutlineErrorOutline } from "react-icons/md";
 import { Spinner } from "@components/spinner";
 
 export const Route = createFileRoute("/stations/$stationID")({
@@ -39,10 +38,7 @@ function View() {
             <span className="text-xs">Go Back</span>
           </Link>
 
-          <div className="h-auto w-80 rounded-xl bg-white/5 p-6 text-white flex flex-col gap-3 items-center">
-            <MdOutlineErrorOutline className="text-[48px]" />
-            <span className="text-sm">Could not find selected station.</span>
-          </div>
+          <PlayerError message="Could not find selected station." />
         </div>
       </div>
     );

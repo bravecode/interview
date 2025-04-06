@@ -5,6 +5,8 @@ import { PlayerNavigation } from "./PlayerNavigation";
 import { PlayerVolume } from "./PlayerVolume";
 import { useAtomValue } from "jotai";
 import { isMutedAtom, volumeAtom } from "./atoms";
+import { PlayerError } from "./PlayerError";
+import { Spinner } from "@components/spinner";
 
 type PlayerProps = {
   stationID: string;
@@ -24,7 +26,7 @@ export const Player: React.FC<PlayerProps> = ({
   const volume = useAtomValue(volumeAtom);
   const isMuted = useAtomValue(isMutedAtom);
   const [playerState, setPlayerState] = useState<PlayerState>({
-    status: "paused",
+    status: "loading",
     duration: 0,
     currentTime: 0,
   });
@@ -83,25 +85,44 @@ export const Player: React.FC<PlayerProps> = ({
       }));
     };
 
-    const audioRefCopy = audioRef.current;
+    const handleLoadingStart = (): void => {
+      setPlayerState((prev) => ({
+        ...prev,
+        status: "loading",
+      }));
+    };
 
-    audioRefCopy.addEventListener("playing", handlePlay);
-    audioRefCopy.addEventListener("pause", handlePause);
-    audioRefCopy.addEventListener("error", handleError);
-    audioRefCopy.addEventListener("timeupdate", handleTimeUpdate);
+    const handleLoadingEnd = (): void => {
+      const audio = audioRef.current;
+
+      setPlayerState((prev) => ({
+        ...prev,
+        status: "paused",
+        seekable: !!audio.seekable.length,
+      }));
+    };
+
+    const audio = audioRef.current;
+
+    audio.addEventListener("playing", handlePlay);
+    audio.addEventListener("pause", handlePause);
+    audio.addEventListener("error", handleError);
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("loadstart", handleLoadingStart);
+    audio.addEventListener("canplay", handleLoadingEnd);
 
     return () => {
-      audioRefCopy.pause();
+      audio.pause();
 
-      // Clear Events
-      audioRefCopy.removeEventListener("playing", handlePlay);
-      audioRefCopy.removeEventListener("pause", handlePause);
-      audioRefCopy.removeEventListener("error", handleError);
-      audioRefCopy.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("playing", handlePlay);
+      audio.removeEventListener("pause", handlePause);
+      audio.removeEventListener("error", handleError);
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("loadstart", handleLoadingStart);
+      audio.removeEventListener("canplay", handleLoadingEnd);
 
-      // Clear Player
-      audioRefCopy.src = "";
-      audioRefCopy.removeAttribute("src");
+      audio.src = "";
+      audio.removeAttribute("src");
     };
   }, [stationStreamURL]);
 
@@ -164,6 +185,18 @@ export const Player: React.FC<PlayerProps> = ({
     seekTo(newTime);
   };
 
+  if (playerState.status === "loading") {
+    return (
+      <section className="h-80 w-80 rounded-xl bg-white/5 p-6 flex items-center justify-center">
+        <Spinner />
+      </section>
+    );
+  }
+
+  if (playerState.status === "error" && !!playerState.error) {
+    return <PlayerError message={playerState.error} />;
+  }
+
   return (
     <section className="h-auto w-80 rounded-xl bg-white/5 p-6">
       <div className="h-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-white/5">
@@ -185,6 +218,7 @@ export const Player: React.FC<PlayerProps> = ({
         currentTime={playerState.currentTime}
         duration={playerState.duration}
         onSeek={seekTo}
+        seekable={playerState.seekable}
         disabled={!playerState.duration}
       />
 

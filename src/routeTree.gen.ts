@@ -12,8 +12,8 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
-import { Route as ShareIndexImport } from './routes/share/index'
 import { Route as StationsStationIDImport } from './routes/stations/$stationID'
+import { Route as ShareStationIDImport } from './routes/share/$stationID'
 
 // Create/Update Routes
 
@@ -23,15 +23,15 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ShareIndexRoute = ShareIndexImport.update({
-  id: '/share/',
-  path: '/share/',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const StationsStationIDRoute = StationsStationIDImport.update({
   id: '/stations/$stationID',
   path: '/stations/$stationID',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ShareStationIDRoute = ShareStationIDImport.update({
+  id: '/share/$stationID',
+  path: '/share/$stationID',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,18 +46,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/share/$stationID': {
+      id: '/share/$stationID'
+      path: '/share/$stationID'
+      fullPath: '/share/$stationID'
+      preLoaderRoute: typeof ShareStationIDImport
+      parentRoute: typeof rootRoute
+    }
     '/stations/$stationID': {
       id: '/stations/$stationID'
       path: '/stations/$stationID'
       fullPath: '/stations/$stationID'
       preLoaderRoute: typeof StationsStationIDImport
-      parentRoute: typeof rootRoute
-    }
-    '/share/': {
-      id: '/share/'
-      path: '/share'
-      fullPath: '/share'
-      preLoaderRoute: typeof ShareIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -67,42 +67,42 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/share/$stationID': typeof ShareStationIDRoute
   '/stations/$stationID': typeof StationsStationIDRoute
-  '/share': typeof ShareIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/share/$stationID': typeof ShareStationIDRoute
   '/stations/$stationID': typeof StationsStationIDRoute
-  '/share': typeof ShareIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/share/$stationID': typeof ShareStationIDRoute
   '/stations/$stationID': typeof StationsStationIDRoute
-  '/share/': typeof ShareIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/stations/$stationID' | '/share'
+  fullPaths: '/' | '/share/$stationID' | '/stations/$stationID'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/stations/$stationID' | '/share'
-  id: '__root__' | '/' | '/stations/$stationID' | '/share/'
+  to: '/' | '/share/$stationID' | '/stations/$stationID'
+  id: '__root__' | '/' | '/share/$stationID' | '/stations/$stationID'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ShareStationIDRoute: typeof ShareStationIDRoute
   StationsStationIDRoute: typeof StationsStationIDRoute
-  ShareIndexRoute: typeof ShareIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ShareStationIDRoute: ShareStationIDRoute,
   StationsStationIDRoute: StationsStationIDRoute,
-  ShareIndexRoute: ShareIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -116,18 +116,18 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/stations/$stationID",
-        "/share/"
+        "/share/$stationID",
+        "/stations/$stationID"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
+    "/share/$stationID": {
+      "filePath": "share/$stationID.tsx"
+    },
     "/stations/$stationID": {
       "filePath": "stations/$stationID.tsx"
-    },
-    "/share/": {
-      "filePath": "share/index.tsx"
     }
   }
 }

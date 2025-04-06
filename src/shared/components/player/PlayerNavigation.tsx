@@ -15,6 +15,7 @@ import { StationFavorite } from "@features/stations/components/StationFavorite";
 type PlayerNavigationProps = {
   stationID: string;
   status: PlayerStatus;
+  seekable?: boolean;
   onSeekForward: () => void;
   onSeekBackward: () => void;
   onToggle: () => void;
@@ -23,6 +24,7 @@ type PlayerNavigationProps = {
 export const PlayerNavigation: React.FC<PlayerNavigationProps> = ({
   stationID,
   status,
+  seekable,
   onSeekForward,
   onSeekBackward,
   onToggle,
@@ -43,7 +45,8 @@ export const PlayerNavigation: React.FC<PlayerNavigationProps> = ({
       </button>
       <button
         onClick={onSeekBackward}
-        className="cursor-pointer text-white text-[24px] hover:text-white/80"
+        className="cursor-pointer text-white text-[24px] hover:text-white/80 disabled:text-neutral-600"
+        disabled={!seekable}
       >
         <FaBackward />
       </button>
@@ -55,7 +58,8 @@ export const PlayerNavigation: React.FC<PlayerNavigationProps> = ({
       </button>
       <button
         onClick={onSeekForward}
-        className="cursor-pointer text-white text-[24px] hover:text-white/80"
+        className="cursor-pointer text-white text-[24px] hover:text-white/80 disabled:text-neutral-600"
+        disabled={!seekable}
       >
         <FaForward />
       </button>

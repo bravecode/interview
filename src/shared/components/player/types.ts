@@ -3,6 +3,7 @@ export type PlayerState = {
   error?: string | null;
   duration: number;
   currentTime: number;
+  seekable?: boolean;
 };
 
-export type PlayerStatus = "playing" | "paused" | "error";
+export type PlayerStatus = "loading" | "playing" | "paused" | "error";

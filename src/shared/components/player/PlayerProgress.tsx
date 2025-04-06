@@ -6,6 +6,7 @@ type PlayerProgressProps = {
   currentTime: number;
   duration: number;
   disabled?: boolean;
+  seekable?: boolean;
   onSeek: (value: number) => void;
 };
 
@@ -13,6 +14,7 @@ export const PlayerProgress: React.FC<PlayerProgressProps> = ({
   currentTime,
   duration,
   disabled,
+  seekable,
   onSeek,
 }) => {
   const handleValueChange = (values: number[]) => {
@@ -26,7 +28,7 @@ export const PlayerProgress: React.FC<PlayerProgressProps> = ({
         min={0}
         max={duration}
         onValueChange={handleValueChange}
-        disabled={disabled}
+        disabled={disabled || !seekable}
         className="block h-1.5 w-full relative"
       >
         <Slider.Track className="inline-block h-1.5 w-full bg-neutral-400 rounded-full absolute overflow-hidden">
@@ -37,7 +39,7 @@ export const PlayerProgress: React.FC<PlayerProgressProps> = ({
 
       <div className="text-neutral-400 flex items-center justify-between font-semibold text-xs">
         <span>{formatPlayerTime(currentTime)}</span>
-        <span>{formatPlayerTime(duration)}</span>
+        {seekable ? <span>{formatPlayerTime(duration)}</span> : null}
       </div>
     </div>
   );
