@@ -20,18 +20,31 @@ export const PlayerVolume: React.FC<PlayerVolumeProps> = ({ audio }) => {
   }, [volume, audio]);
 
   return (
-    <div className="flex gap-2 items-center">
+    <div
+      className="flex gap-2 items-center"
+      data-testid="volume-control-container"
+    >
       <Slider.Root
         min={1}
         max={100}
         onValueChange={handleVolumeChange}
         className="h-6 w-full relative flex-1 flex items-center"
         value={[volume]}
+        data-testid="volume-control"
       >
-        <Slider.Track className="inline-block h-1.5 w-full bg-neutral-400 rounded-full absolute overflow-hidden">
-          <Slider.Range className="inline-block h-1.5 bg-white rounded-l-full absolute" />
+        <Slider.Track
+          className="inline-block h-1.5 w-full bg-neutral-400 rounded-full absolute overflow-hidden"
+          data-testid="volume-control-track"
+        >
+          <Slider.Range
+            className="inline-block h-1.5 bg-white rounded-l-full absolute"
+            data-testid="volume-control-range"
+          />
         </Slider.Track>
-        <Slider.Thumb className="h-6 w-6 bg-white rounded-full flex items-center justify-center text-[10px]">
+        <Slider.Thumb
+          className="h-6 w-6 bg-white rounded-full flex items-center justify-center text-[10px]"
+          data-testid="volume-control-thumb"
+        >
           <FaVolumeLow />
         </Slider.Thumb>
       </Slider.Root>

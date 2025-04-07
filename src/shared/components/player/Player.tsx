@@ -27,18 +27,29 @@ export const Player: React.FC<PlayerProps> = ({ data }) => {
   }
 
   return (
-    <section className="h-auto w-80 rounded-xl bg-white/5 p-6">
+    <section
+      className="h-auto w-80 rounded-xl bg-white/5 p-6"
+      data-testid="player"
+    >
       <div className="h-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-white/5">
         <img
           src={data.imgUrl}
           alt={`${data.name} Thumbnail`}
           className="w-full"
+          data-testid="player-thumbnail"
         />
       </div>
 
-      <header className="mt-6 text-sm">
-        <h1 className="font-semibold text-white">{data.name}</h1>
-        <p className="font-normal text-neutral-400 mt-1">{data.description}</p>
+      <header className="mt-6 text-sm" data-testid="player-header">
+        <h1 className="font-semibold text-white" data-testid="player-title">
+          {data.name}
+        </h1>
+        <p
+          className="font-normal text-neutral-400 mt-1"
+          data-testid="player-description"
+        >
+          {data.description}
+        </p>
       </header>
 
       <PlayerProgress

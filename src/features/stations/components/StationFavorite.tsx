@@ -52,6 +52,9 @@ export const StationFavorite: React.FC<StationFavoriteProps> = ({
           ? "text-red-400 hover:text-red-400/80"
           : "text-white hover:text-white/80"
       )}
+      data-testid={
+        isFavorite ? "favorite-station-remove" : "favorite-station-add"
+      }
     >
       {isFavorite ? <FaHeart /> : <FaRegHeart />}
     </button>

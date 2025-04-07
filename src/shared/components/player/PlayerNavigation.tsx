@@ -51,10 +51,16 @@ export const PlayerNavigation: React.FC<PlayerNavigationProps> = ({
   };
 
   return (
-    <nav className="w-full flex items-center justify-center gap-6 py-6 my-6 border-t border-b border-solid border-white/5">
+    <nav
+      className="w-full flex items-center justify-center gap-6 py-6 my-6 border-t border-b border-solid border-white/5"
+      data-testid="player-controls"
+    >
       <button
         onClick={handleMuteToggle}
         className="cursor-pointer text-white text-[16px] hover:text-white/80"
+        data-testid={
+          isMuted ? "player-controls-unmute" : "player-controls-mute"
+        }
       >
         {isMuted ? <FaVolumeXmark /> : <FaVolumeLow />}
       </button>
@@ -62,6 +68,7 @@ export const PlayerNavigation: React.FC<PlayerNavigationProps> = ({
         onClick={seekBackward}
         className="cursor-pointer text-white text-[24px] hover:text-white/80 disabled:text-neutral-600"
         disabled={!canSeek}
+        data-testid="player-controls-seek-backward"
       >
         <FaBackward />
       </button>
@@ -69,6 +76,11 @@ export const PlayerNavigation: React.FC<PlayerNavigationProps> = ({
         onClick={handleToggle}
         className="cursor-pointer text-white text-[36px] hover:text-white/80 disabled:text-neutral-600"
         disabled={status === "loading" || status === "error"}
+        data-testid={
+          status === "playing"
+            ? "player-controls-pause"
+            : "player-controls-play"
+        }
       >
         {status === "playing" ? <FaPause /> : <FaPlay />}
       </button>
@@ -76,6 +88,7 @@ export const PlayerNavigation: React.FC<PlayerNavigationProps> = ({
         onClick={seekForward}
         className="cursor-pointer text-white text-[24px] hover:text-white/80 disabled:text-neutral-600"
         disabled={!canSeek}
+        data-testid="player-controls-seek-forward"
       >
         <FaForward />
       </button>

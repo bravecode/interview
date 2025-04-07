@@ -7,9 +7,14 @@ type PlayerErrorProps = {
 
 export const PlayerError: React.FC<PlayerErrorProps> = ({ message }) => {
   return (
-    <div className="h-auto w-80 rounded-xl bg-white/5 p-6 text-white flex flex-col gap-3 items-center">
+    <div
+      className="h-auto w-80 rounded-xl bg-white/5 p-6 text-white flex flex-col gap-3 items-center"
+      data-testid="player-error"
+    >
       <MdOutlineErrorOutline className="text-[48px]" />
-      <span className="text-sm">{message}</span>
+      <span className="text-sm" data-testid="player-error-message">
+        {message}
+      </span>
     </div>
   );
 };
